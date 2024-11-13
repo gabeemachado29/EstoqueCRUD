@@ -1,0 +1,1 @@
+<a href="{{ route('google.redirect') }}">Login Google</a>

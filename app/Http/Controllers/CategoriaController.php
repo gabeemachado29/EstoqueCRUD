@@ -1,75 +1,71 @@
 <?php
+    namespace App\Http\Controllers;
+    use App\Models\Categoria;
+    use Illuminate\Http\Request;
 
-namespace App\Http\Controllers;
-
-use Illuminate\Http\Request;
-
-use App\Models\Categoria;
-
-class CategoriaController extends Controller
-{
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    class CategoriaController extends Controller
     {
-        $categorias = Categoria::all();
-        return view('categorias.index', compact('categorias'));
+        // Exibe todos as categorias
+        public function index()
+        {
+            $categorias = Categoria::all();
+            return view('categorias.index', compact('categorias'));
+        }
+
+        // Exibe o formulário para criar uma novo categoria
+        public function create()
+        {
+            return view('categorias.create');
+        }
+
+        // Armazena uma nova categoria
+        public function store(Request $request)
+        {
+
+            $request->validate([
+                'nome' => 'required',
+                'descricao' => 'required',
+            ]);
+
+            Categoria::create($request->all());
+
+            return redirect()->route('categorias.index')
+                            ->with('success', 'Categoria cadastrada com sucesso!');
+        }
+
+        // Exibe os detalhes de uma categoria
+        public function show(Categoria $categoria)
+        {
+            return view('categorias.show', compact('categoria'));
+        }
+
+        // Exibe o formulário de edição de uma categoria
+        public function edit(Categoria $categoria)
+        {
+            return view('categorias.edit', compact('categoria'));
+        }
+
+        // Atualiza os dados de uma categoria
+        public function update(Request $request, Categoria $categoria)
+        {
+            $request->validate([
+                'nome' => 'required',
+                'descricao' => 'required',
+            ]);
+
+            $categoria->update($request->all());
+
+            return redirect()->route('categorias.index')
+                            ->with('success', 'Categoria atualizada com sucesso!');
+        }
+
+        // Exclui uma categoria
+        public function destroy(Categoria $categoria)
+        {
+            $categoria->delete();
+
+            return redirect()->route('categorias.index')
+                            ->with('success', 'Categoria excluída com sucesso!');
+        }
+
     }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        return view('categorias.create');
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        $request->validate([
-            'nome' => 'required|max:255',
-            'cpf' => 'required|max:255',
-            'email' => 'required|max:255',
-        ]);
-
-        Categoria::create($request->all());
-
-        return redirect()->route('categorias.index')->with('sucesso', 'Categoria cadastrada com sucesso!');
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
-}

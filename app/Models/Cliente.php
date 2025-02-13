@@ -1,0 +1,31 @@
+<?php
+
+namespace App\Models;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Cliente extends Model
+{
+
+    use HasFactory;
+
+    protected $fillable = [
+        'nome',
+        'cpf',
+        'telefone',
+        'email',
+        'cep',
+         'cidade',
+         'uf',
+         'rua',
+        'numero',
+        'bairro',
+        'complemento'
+    ];
+
+    public function saida()
+    {
+        return $this->hasMany(Saida::class);
+    }
+}
+

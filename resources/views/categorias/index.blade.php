@@ -1,105 +1,110 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Lista de Categorias</title>
-    <!-- Incluindo o CSS do Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        .table-responsive {
+            overflow-x: auto;
+        }
+        .table thead th {
+            background-color: #343a40;
+            color: white;
+        }
+        .table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+        .btn-action {
+            margin: 2px;
+            padding: 5px 10px;
+            font-size: 14px;
+        }
+        .btn-action i {
+            margin-right: 5px;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #004085;
+        }
+        .btn-warning {
+            background-color: #ffc107;
+            border-color: #ffc107;
+        }
+        .btn-warning:hover {
+            background-color: #e0a800;
+            border-color: #d39e00;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+        .btn-danger:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+        }
+        .form-container {
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+        }
+    </style>
 </head>
-<body>
+<x-app-layout>
+    <x-slot name="header">
+        <div class="d-flex justify-content-between align-items-center">
+            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                {{ __('Lista de Categorias de Produtos') }}
+            </h2>
+            <a href="{{ route('categorias.create') }}" class="btn btn-primary btn-lg">
+                <i class="fas fa-plus"></i> Cadastrar Categoria
+            </a>
+        </div>
+    </x-slot>
 
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">Dashboard</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#">Início</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Configurações</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Sair</a>
-                    </li>
-                    <li class="nav-item">
-                        <!-- Campo de pesquisa -->
-                        <form class="d-flex" role="search">
-                            <input class="form-control me-2" type="search" placeholder="Pesquisar" aria-label="Pesquisar">
-                            <button class="btn btn-outline-success" type="submit">Pesquisar</button>
-                        </form>
-                    </li>
-                </ul>
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 text-gray-900 dark:text-gray-100">
+                    <div class="form-container">
+                        <!-- Tabela de Categorias -->
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Nome</th>
+                                        <th>Descrição</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($categorias as $categoria)
+                                        <tr>
+                                            <td>{{ $categoria->id }}</td>
+                                            <td>{{ $categoria->nome }}</td>
+                                            <td>{{ $categoria->descricao }}</td>
+                                            <td>
+                                                <a href="{{ route('categorias.edit', $categoria->id) }}" class="btn btn-warning btn-action">
+                                                    <i class="fas fa-pencil-alt"></i> Editar
+                                                </a>
+                                                <form action="{{ route('categorias.destroy', $categoria->id) }}" method="POST" style="display:inline-block;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger btn-action" onclick="return confirm('Tem certeza que deseja excluir esta categoria?')">
+                                                        <i class="fas fa-trash-alt"></i> Excluir
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </nav>
-
-    <div class="container mt-5">
-        <!-- Título da página -->
-        <h2>Lista de Categorias</h2>
-
-        <!-- Mensagens de sucesso e erro -->
-        @if(session('sucesso'))
-            <div class="alert alert-success">
-                {{ session('sucesso') }}
-            </div>
-        @elseif(session('erro'))
-            <div class="alert alert-danger">
-                {{ session('erro') }}
-            </div>
-        @endif
-
-        <!-- Botão para cadastrar nova categoria -->
-        <div class="mb-3">
-            <a href="{{ route('categorias.create') }}" class="btn btn-primary">Cadastrar Nova Categoria</a>
-        </div>
-
-        <!-- Verifica se não há categorias cadastradas -->
-        @if($categorias->isEmpty())
-            <p>Nenhuma categoria cadastrada.</p>
-        @else
-            <!-- Tabela de categorias -->
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th scope="col">Nome</th>
-                        <th scope="col">CPF</th>
-                        <th scope="col">Email</th>
-                        <th scope="col">Ações</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($categorias as $categoria)
-                        <tr>
-                            <td>{{ $categoria->nome }}</td>
-                            <td>{{ $categoria->cpf }}</td>
-                            <td>{{ $categoria->email }}</td>
-                            <td>
-                                <!-- Links para visualização e edição -->
-                                <a href="{{ route('categorias.show', $categoria->id) }}" class="btn btn-info btn-sm">Visualizar</a>
-                                <a href="{{ route('categorias.edit', $categoria->id) }}" class="btn btn-warning btn-sm">Editar</a>
-                                <!-- Formulário para exclusão -->
-                                <form action="{{ route('categorias.destroy', $categoria->id) }}" method="POST" class="d-inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm">Excluir</button>
-                                </form>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        @endif
     </div>
-
-    <!-- Incluindo o JS do Bootstrap -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-
-</body>
-</html>
+</x-app-layout>
